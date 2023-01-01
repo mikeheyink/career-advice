@@ -1,15 +1,35 @@
-# Import the required libraries
-import requests
+import openai
 
-# Set the API endpoint and your API key
-api_endpoint = '/server/v1/message'
-api_key = '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'
+def send_message(request):
+    request_json = request.get_json(silent=True)
+    if request_json and 'prompt' in request_json:
+        prompt = request_json['prompt']
 
-# Send a POST request to the API
-def send_message(message):
-  data = { 'message': message }
-  headers = { 'Content-Type': 'application/json', 'X-API-Key': api_key }
-  response = requests.post(api_endpoint, json=data, headers=headers)
+        # Set up the OpenAI API client
+        openai.api_key = "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"
 
-  # Return the chatbot's message
-  return response.json()['message']
+        # Set the desired model and parameters
+        model = "text-davinci-002"
+        max_tokens = 2048
+        temperature = 0.5
+
+        # Print the received prompt to the console (for debugging)
+        print("Received prompt:", prompt)
+
+        # Make a request to the OpenAI API
+        response = openai.Completion.create(
+            engine=model,
+            prompt=prompt,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+
+        # Print the response from the OpenAI API to the console (for debugging)
+        print("Response from OpenAI API:", response)
+
+        return response.choices[0].text
+    else:
+        return "Error: No prompt received"
