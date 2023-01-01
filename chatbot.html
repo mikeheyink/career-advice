@@ -24,7 +24,7 @@
                     document.getElementById("output").innerHTML = this.responseText;
                 }
             };
-            xhr.open("POST", "https://mikeheyink.github.io/career-advice/server/send-message", true);
+            xhr.open("POST", "https://mikeheyink.github.io/career-advice/server/send-message.py", true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(JSON.stringify({'prompt': input}));
         }
