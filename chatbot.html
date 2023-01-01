@@ -1,65 +1,34 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <title>Chatbot</title>
-  <link rel="stylesheet" href="./css/style.css">
-</head>
-<body>
-  <header>
-    <h1>Chatbot</h1>
-  </header>
-  <nav>
-    <ul>
-      <li><a href="./index.html">Home</a></li>
-      <li><a href="./chatbot.html">Chatbot</a></li>
-      <li><a href="./resources.html">Resources</a></li>
-      <li><a href="./contact.html">Contact</a></li>
-    </ul>
-  </nav>
-  <main>
-    <h2>Welcome to the Chatbot</h2>
-    <p>Ask me any questions you have about choosing a major or career path, and I'll do my best to help you find the answers you need.</p>
-    <div id="chatbot">
-      <!-- Chatbot messages go here -->
-    </div>
-    <form id="chatbot-form">
-      <input type="text" placeholder="Enter your message here...">
-      <button type="submit">Send</button>
+  <head>
+    <title>Career Advice Chatbot</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <h1>Career Advice Chatbot</h1>
+    <form id="form">
+      <input type="text" id="input" placeholder="Ask a question">
+      <button type="submit" id="submit">Send</button>
     </form>
-    <div id="chatbot-response"></div>
-  </main>
-  <footer>
-    <p>Copyright 2021 Advice for Teens</p>
-  </footer>
-<script>
-  const chatbotForm = document.getElementById('chatbot-form');
-  const chatbot = document.getElementById('chatbot');
-  const chatbotResponse = document.getElementById('chatbot-response');
-
-  chatbotForm.addEventListener('submit', event => {
-    event.preventDefault();
-
-    const input = chatbotForm.querySelector('input');
-    const message = input.value;
-    input.value = '';
-
-    // Send the message to the server using an AJAX request
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', './server/send-message');
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        // Update the chatbot response with the chatbot's message
-        const response = JSON.parse(xhr.responseText);
-        const div = document.createElement('div');
-        div.innerHTML = `<p>You: ${message}</p><p>Chatbot: ${response.message}</p>`;
-        chatbot.appendChild(div);
-        chatbotResponse.innerHTML = `<p>${response.message}</p>`;
-      } else {
-        console.error(xhr.responseText);
-      }
-    };
-    xhr.send(JSON.stringify({ message }));
-  });
-</script>
-
+    <div id="response"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $("#form").submit(function(e) {
+        e.preventDefault();
+        var input = $("#input").val();
+        $.ajax({
+          type: "POST",
+          url: "https://mikeheyink.github.io/career-advice/server/send-message",
+          data: {
+            "prompt": input,
+            "model": "text-davinci-002",
+            "max_tokens": 2048,
+            "temperature": 0.5
+          },
+          success: function(response) {
+            $("#response").text(response.choices[0].text);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
