@@ -1,34 +1,33 @@
 <html>
-  <head>
+<head>
     <title>Career Advice Chatbot</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body>
+</head>
+<body>
     <h1>Career Advice Chatbot</h1>
-    <form id="form">
-      <input type="text" id="input" placeholder="Ask a question">
-      <button type="submit" id="submit">Send</button>
+    <p>Welcome to the Career Advice Chatbot! Use the input box below to ask a question about which subjects to major in, and the chatbot will use artificial intelligence to provide a response.</p>
+
+    <form>
+        <label for="input">Input:</label><br>
+        <input type="text" id="input" name="input"><br>
+        <button type="button" onclick="sendMessage()">Send</button>
     </form>
-    <div id="response"></div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <div id="output"></div>
+
     <script>
-      $("#form").submit(function(e) {
-        e.preventDefault();
-        var input = $("#input").val();
-        $.ajax({
-          type: "POST",
-          url: "https://mikeheyink.github.io/career-advice/server/send-message",
-          data: {
-            "prompt": input,
-            "model": "text-davinci-002",
-            "max_tokens": 2048,
-            "temperature": 0.5
-          },
-          success: function(response) {
-            $("#response").text(response.choices[0].text);
-          }
-        });
-      });
+        function sendMessage() {
+            var input = document.getElementById("input").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("output").innerHTML = this.responseText;
+                }
+            };
+            xhr.open("POST", "https://mikeheyink.github.io/career-advice/server/send-message", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify({'prompt': input}));
+        }
     </script>
-  </body>
+</body>
 </html>
